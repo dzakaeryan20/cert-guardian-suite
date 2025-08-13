@@ -73,6 +73,10 @@ const Dashboard = () => {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Certificate
               </Button>
+              <Button variant="hero" onClick={() => window.location.href = '/create-agent'}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Agent
+              </Button>
               <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                 <Settings className="h-5 w-5" />
               </Button>
