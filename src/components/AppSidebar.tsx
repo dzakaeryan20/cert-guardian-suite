@@ -23,7 +23,7 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, setOpen } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
   const isCollapsed = state === "collapsed";
@@ -32,11 +32,20 @@ export function AppSidebar() {
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "hover:bg-sidebar-accent/50";
 
+  const handleLogoHover = () => {
+    if (isCollapsed) {
+      setOpen(true);
+    }
+  };
+
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-64"} collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div 
+            className="flex items-center space-x-2 cursor-pointer transition-colors hover:bg-sidebar-accent/50 rounded-md p-1 -m-1"
+            onMouseEnter={handleLogoHover}
+          >
             <Shield className="h-6 w-6 text-sidebar-primary" />
             {!isCollapsed && (
               <span className="font-semibold text-sidebar-foreground">SSL Monitor</span>
