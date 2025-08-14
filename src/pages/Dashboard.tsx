@@ -11,6 +11,8 @@ import {
   Settings,
   Plus
 } from "lucide-react";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Dashboard = () => {
   const certificates = [
@@ -56,37 +58,42 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-gradient-primary text-white shadow-medium">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Shield className="h-8 w-8 mr-3" />
-              <div>
-                <h1 className="text-2xl font-bold">SSL Certificate Monitor</h1>
-                <p className="text-white/80">Real-time certificate monitoring and alerts</p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-gradient-primary text-white shadow-medium">
+            <div className="px-4 sm:px-6 lg:px-8 py-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <SidebarTrigger className="mr-4 text-white hover:bg-white/20" />
+                  <Shield className="h-8 w-8 mr-3" />
+                  <div>
+                    <h1 className="text-2xl font-bold">SSL Certificate Monitor</h1>
+                    <p className="text-white/80">Real-time certificate monitoring and alerts</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Button variant="hero">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Certificate
+                  </Button>
+                  <Button variant="hero" onClick={() => window.location.href = '/create-agent'}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Agent
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="hero">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Certificate
-              </Button>
-              <Button variant="hero" onClick={() => window.location.href = '/create-agent'}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Agent
-              </Button>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+          </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Main Content */}
+          <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -175,7 +182,9 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </main>
-    </div>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
