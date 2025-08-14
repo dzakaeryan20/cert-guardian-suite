@@ -68,7 +68,6 @@ const Dashboard = () => {
             <div className="px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <SidebarTrigger className="mr-4 text-white hover:bg-white/20" />
                   <Shield className="h-8 w-8 mr-3" />
                   <div>
                     <h1 className="text-2xl font-bold">SSL Certificate Monitor</h1>

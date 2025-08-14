@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -34,11 +35,14 @@ export function AppSidebar() {
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-64"} collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center space-x-2">
-          <Shield className="h-6 w-6 text-sidebar-primary" />
-          {!isCollapsed && (
-            <span className="font-semibold text-sidebar-foreground">SSL Monitor</span>
-          )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Shield className="h-6 w-6 text-sidebar-primary" />
+            {!isCollapsed && (
+              <span className="font-semibold text-sidebar-foreground">SSL Monitor</span>
+            )}
+          </div>
+          <SidebarTrigger className="h-6 w-6" />
         </div>
       </SidebarHeader>
 
