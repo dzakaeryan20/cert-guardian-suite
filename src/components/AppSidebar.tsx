@@ -39,33 +39,64 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className={isCollapsed ? "w-14" : "w-64"} collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center justify-between">
+    <Sidebar className={`${isCollapsed ? "w-16" : "w-72"} bg-gradient-to-b from-sidebar-background to-sidebar-background/95 shadow-strong border-r border-sidebar-border/50`} collapsible="icon">
+      <SidebarHeader className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary-glow/5"></div>
+        <div className="relative flex items-center justify-between p-6">
           <div 
-            className="flex items-center space-x-2 cursor-pointer transition-colors hover:bg-sidebar-accent/50 rounded-md p-1 -m-1"
+            className="flex items-center space-x-3 cursor-pointer group transition-all duration-300 hover:bg-primary/10 rounded-xl p-3 -m-3"
             onMouseEnter={handleLogoHover}
           >
-            <Shield className="h-6 w-6 text-sidebar-primary" />
+            <div className="relative">
+              <Shield className="h-8 w-8 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary-glow" />
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
             {!isCollapsed && (
-              <span className="font-semibold text-sidebar-foreground">SSL Monitor</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-lg text-sidebar-foreground group-hover:text-primary transition-colors duration-300">SSL Monitor</span>
+                <span className="text-xs text-sidebar-foreground/70">Security Dashboard</span>
+              </div>
             )}
           </div>
-          <SidebarTrigger className="h-6 w-6" />
+          <SidebarTrigger className="h-8 w-8 bg-sidebar-accent/20 hover:bg-sidebar-accent/40 border border-sidebar-border/30 rounded-lg transition-all duration-300 hover:scale-105" />
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-4 py-6">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider mb-4 px-3">
+            Navigation
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-2">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                    <NavLink 
+                      to={item.url} 
+                      className={({ isActive }) => `
+                        ${getNavCls({ isActive })}
+                        group relative flex items-center rounded-xl px-3 py-3 transition-all duration-300
+                        ${isActive 
+                          ? 'bg-gradient-to-r from-primary/20 to-primary-glow/10 text-primary border-l-4 border-primary shadow-medium' 
+                          : 'hover:bg-sidebar-accent/30 hover:translate-x-1'
+                        }
+                      `}
+                    >
+                      <div className="relative">
+                        <item.icon className={`h-5 w-5 transition-all duration-300 ${isActive ? 'text-primary' : 'text-sidebar-foreground/70 group-hover:text-primary'}`} />
+                        {isActive && (
+                          <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm"></div>
+                        )}
+                      </div>
+                      {!isCollapsed && (
+                        <span className={`ml-3 font-medium transition-all duration-300 ${isActive ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'}`}>
+                          {item.title}
+                        </span>
+                      )}
+                      {isActive && !isCollapsed && (
+                        <div className="absolute right-3 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
