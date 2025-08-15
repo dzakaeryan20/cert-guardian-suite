@@ -58,9 +58,6 @@ export function AppSidebar() {
               </div>
             )}
           </div>
-          {!isCollapsed && (
-            <SidebarTrigger className="h-8 w-8 bg-sidebar-accent/20 hover:bg-sidebar-accent/40 border border-sidebar-border/30 rounded-lg transition-all duration-300 hover:scale-105" />
-          )}
         </div>
       </SidebarHeader>
 
