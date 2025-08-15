@@ -42,9 +42,9 @@ export function AppSidebar() {
     <Sidebar className={`${isCollapsed ? "w-16" : "w-72"} bg-gradient-to-b from-sidebar-background to-sidebar-background/95 shadow-strong border-r border-sidebar-border/50`} collapsible="icon">
       <SidebarHeader className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary-glow/5"></div>
-        <div className="relative flex items-center justify-between p-6">
+        <div className={`relative flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} p-6`}>
           <div 
-            className="flex items-center space-x-3 cursor-pointer group transition-all duration-300 hover:bg-primary/10 rounded-xl p-3 -m-3"
+            className={`flex items-center space-x-3 cursor-pointer group transition-all duration-300 hover:bg-primary/10 rounded-xl p-3 -m-3 ${isCollapsed ? 'justify-center' : ''}`}
             onMouseEnter={handleLogoHover}
           >
             <div className="relative">
@@ -58,7 +58,9 @@ export function AppSidebar() {
               </div>
             )}
           </div>
-          <SidebarTrigger className="h-8 w-8 bg-sidebar-accent/20 hover:bg-sidebar-accent/40 border border-sidebar-border/30 rounded-lg transition-all duration-300 hover:scale-105" />
+          {!isCollapsed && (
+            <SidebarTrigger className="h-8 w-8 bg-sidebar-accent/20 hover:bg-sidebar-accent/40 border border-sidebar-border/30 rounded-lg transition-all duration-300 hover:scale-105" />
+          )}
         </div>
       </SidebarHeader>
 
