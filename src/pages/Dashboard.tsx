@@ -68,10 +68,11 @@ const Dashboard = () => {
             <div className="px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Shield className="h-8 w-8 mr-3" />
+                  {/* <Shield className="h-8 w-8 mr-3" /> */}
+                  <span></span>
                   <div>
-                    <h1 className="text-2xl font-bold">SSL Certificate Monitor</h1>
-                    <p className="text-white/80">Real-time certificate monitoring and alerts</p>
+                    <h1 className="text-2xl font-bold pl-2">Whissper</h1>
+                    <p className="text-white/80 pl-2">Real-time certificate monitoring and alerts</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -143,7 +144,7 @@ const Dashboard = () => {
         {/* Certificates Table */}
         <Card>
           <CardHeader>
-            <CardTitle>SSL Certificates</CardTitle>
+            <CardTitle>Hydra Shield</CardTitle>
             <CardDescription>
               Monitor and manage your SSL certificates across all domains
             </CardDescription>

@@ -1,4 +1,4 @@
-import { Shield, FileText, Bot, Settings, Home } from "lucide-react";
+import { Shield, FileText, X, Settings, Home } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -18,8 +18,8 @@ import {
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Certificates", url: "/certificates", icon: FileText },
-  { title: "Agents", url: "/agents", icon: Bot },
-  { title: "Create Agent", url: "/create-agent", icon: Settings },
+  { title: "Agent", url: "/agent", icon: X },
+  { title: "Setting Admin", url: "/create-agent", icon: Settings },
 ];
 
 export function AppSidebar() {
@@ -49,14 +49,15 @@ export function AppSidebar() {
     >
       <SidebarHeader className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary-glow/5"></div>
-        <div className={`relative flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} p-6`}>
+        <div className={`relative flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} pr-2 pl-2 pt-7 pb-7 h-15 w-15`}>
           <div 
             className={`flex items-center space-x-3 cursor-pointer group transition-all duration-300 hover:bg-primary/10 rounded-xl p-3 -m-3 ${isCollapsed ? 'justify-center' : ''}`}
           >
             <div className="relative">
-              <Shield className="h-8 w-8 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary-glow" />
+              <Shield className="h-8 w-8 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary-glow " />
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
+
             {!isCollapsed && (
               <div className="flex flex-col">
                 <span className="font-bold text-lg text-sidebar-foreground group-hover:text-primary transition-colors duration-300">SSL Monitor</span>
@@ -95,9 +96,11 @@ export function AppSidebar() {
                             <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm"></div>
                           )}
                         </div>
+
                         <span className={`ml-3 font-medium transition-all duration-300 ${isActive ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'}`}>
                           {item.title}
                         </span>
+
                         {isActive && (
                           <div className="absolute right-3 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                         )}
@@ -110,6 +113,38 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarContent>
       )}
+
+      {isCollapsed && (
+        <SidebarContent>
+          <SidebarGroup >
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.title} className="mb-6">
+                    <SidebarMenuButton asChild>
+                      <NavLink 
+                        to={item.url} 
+                        className={({ isActive }) => `
+                          ${getNavCls({ isActive })}
+                          group relative flex items-center rounded-xl transition-all duration-300 hover:bg-sidebar-accent/30 hover:translate-x-1
+                        `}
+                      >
+                        <div className="relative">
+                          <item.icon className={` flex transition-all duration-300`} />
+                            {/* <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm"></div> */}
+                        </div>
+                      
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      )}
+
+
     </Sidebar>
   );
 }
