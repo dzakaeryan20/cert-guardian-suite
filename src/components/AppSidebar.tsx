@@ -32,20 +32,26 @@ export function AppSidebar() {
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "hover:bg-sidebar-accent/50";
 
-  const handleLogoHover = () => {
-    if (isCollapsed) {
-      setOpen(true);
-    }
+  const handleSidebarEnter = () => {
+    setOpen(true);
+  };
+
+  const handleSidebarLeave = () => {
+    setOpen(false);
   };
 
   return (
-    <Sidebar className={`${isCollapsed ? "w-16" : "w-72"} bg-gradient-to-b from-sidebar-background to-sidebar-background/95 shadow-strong border-r border-sidebar-border/50`} collapsible="icon">
+    <Sidebar 
+      className={`${isCollapsed ? "w-16" : "w-72"} bg-gradient-to-b from-sidebar-background to-sidebar-background/95 shadow-strong border-r border-sidebar-border/50`} 
+      collapsible="icon"
+      onMouseEnter={handleSidebarEnter}
+      onMouseLeave={handleSidebarLeave}
+    >
       <SidebarHeader className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary-glow/5"></div>
         <div className={`relative flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} p-6`}>
           <div 
             className={`flex items-center space-x-3 cursor-pointer group transition-all duration-300 hover:bg-primary/10 rounded-xl p-3 -m-3 ${isCollapsed ? 'justify-center' : ''}`}
-            onMouseEnter={handleLogoHover}
           >
             <div className="relative">
               <Shield className="h-8 w-8 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary-glow" />
