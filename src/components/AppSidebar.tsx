@@ -67,49 +67,49 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-4 py-6">
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider mb-4 px-3">
-            Navigation
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      className={({ isActive }) => `
-                        ${getNavCls({ isActive })}
-                        group relative flex items-center rounded-xl px-3 py-3 transition-all duration-300
-                        ${isActive 
-                          ? 'bg-gradient-to-r from-primary/20 to-primary-glow/10 text-primary border-l-4 border-primary shadow-medium' 
-                          : 'hover:bg-sidebar-accent/30 hover:translate-x-1'
-                        }
-                      `}
-                    >
-                      <div className="relative">
-                        <item.icon className={`h-5 w-5 transition-all duration-300 ${isActive ? 'text-primary' : 'text-sidebar-foreground/70 group-hover:text-primary'}`} />
-                        {isActive && (
-                          <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm"></div>
-                        )}
-                      </div>
-                      {!isCollapsed && (
+      {!isCollapsed && (
+        <SidebarContent className="px-4 py-6">
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider mb-4 px-3">
+              Navigation
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="space-y-2">
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink 
+                        to={item.url} 
+                        className={({ isActive }) => `
+                          ${getNavCls({ isActive })}
+                          group relative flex items-center rounded-xl px-3 py-3 transition-all duration-300
+                          ${isActive 
+                            ? 'bg-gradient-to-r from-primary/20 to-primary-glow/10 text-primary border-l-4 border-primary shadow-medium' 
+                            : 'hover:bg-sidebar-accent/30 hover:translate-x-1'
+                          }
+                        `}
+                      >
+                        <div className="relative">
+                          <item.icon className={`h-5 w-5 transition-all duration-300 ${isActive ? 'text-primary' : 'text-sidebar-foreground/70 group-hover:text-primary'}`} />
+                          {isActive && (
+                            <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm"></div>
+                          )}
+                        </div>
                         <span className={`ml-3 font-medium transition-all duration-300 ${isActive ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'}`}>
                           {item.title}
                         </span>
-                      )}
-                      {isActive && !isCollapsed && (
-                        <div className="absolute right-3 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+                        {isActive && (
+                          <div className="absolute right-3 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      )}
     </Sidebar>
   );
 }
