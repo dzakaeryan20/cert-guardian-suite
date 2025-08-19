@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AddCertificateDialog } from "@/components/AddCertificateDialog";
 
 const Certificates = () => {
   const certificates = [
@@ -90,10 +91,7 @@ const Certificates = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <Button variant="hero">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Certificate
-                  </Button>
+                  <AddCertificateDialog />
                 </div>
               </div>
             </div>
