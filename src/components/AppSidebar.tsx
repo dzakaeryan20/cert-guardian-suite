@@ -33,11 +33,15 @@ export function AppSidebar() {
     isActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : "hover:bg-sidebar-accent/50";
 
   const handleSidebarEnter = () => {
-    setOpen(true);
+    if (isCollapsed) {
+      setOpen(true);
+    }
   };
 
   const handleSidebarLeave = () => {
-    setOpen(false);
+    if (!isCollapsed) {
+      setOpen(false);
+    }
   };
 
   return (
