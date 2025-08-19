@@ -155,35 +155,37 @@ export function AppSidebar() {
               <SidebarMenu>
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.title} className="mb-6">
-                    <SidebarMenuButton asChild>
-                      {item.title === "Certificates" ? (
-                        <CertificateHoverMenu>
+                    {item.title === "Certificates" ? (
+                      <CertificateHoverMenu>
+                        <SidebarMenuButton asChild>
                           <NavLink 
                             to={item.url} 
                             className={({ isActive }) => `
                               ${getNavCls({ isActive })}
-                              group relative flex items-center rounded-xl transition-all duration-300 hover:bg-sidebar-accent/30 hover:translate-x-1
+                              group relative flex items-center rounded-xl transition-all duration-300
                             `}
                           >
                             <div className="relative">
                               <item.icon className="flex transition-all duration-300" />
                             </div>
                           </NavLink>
-                        </CertificateHoverMenu>
-                      ) : (
+                        </SidebarMenuButton>
+                      </CertificateHoverMenu>
+                    ) : (
+                      <SidebarMenuButton asChild>
                         <NavLink 
                           to={item.url} 
                           className={({ isActive }) => `
                             ${getNavCls({ isActive })}
-                            group relative flex items-center rounded-xl transition-all duration-300 hover:bg-sidebar-accent/30 hover:translate-x-1
+                            group relative flex items-center rounded-xl transition-all duration-300
                           `}
                         >
                           <div className="relative">
                             <item.icon className="flex transition-all duration-300" />
                           </div>
                         </NavLink>
-                      )}
-                    </SidebarMenuButton>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
