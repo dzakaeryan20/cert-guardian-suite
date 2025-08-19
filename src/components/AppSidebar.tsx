@@ -1,5 +1,6 @@
-import { Shield, FileText, X, Settings, Home } from "lucide-react";
+import { Shield, FileText, X, Settings, Home, Plus, List } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 import {
   Sidebar,
@@ -21,6 +22,35 @@ const menuItems = [
   { title: "Agent", url: "/agent", icon: X },
   { title: "Setting Admin", url: "/create-agent", icon: Settings },
 ];
+
+const CertificateHoverMenu = ({ children }: { children: React.ReactNode }) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <div 
+      className="relative"
+      onMouseEnter={() => setShowMenu(true)}
+      onMouseLeave={() => setShowMenu(false)}
+    >
+      {children}
+      {showMenu && (
+        <div className="absolute left-full top-0 ml-2 z-50 bg-popover border border-border rounded-lg shadow-lg py-2 min-w-48">
+          <NavLink 
+            to="/certificates" 
+            className="flex items-center px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            <List className="h-4 w-4 mr-3" />
+            List Certificates
+          </NavLink>
+          <div className="flex items-center px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer">
+            <Plus className="h-4 w-4 mr-3" />
+            Create Certificate
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export function AppSidebar() {
   const { state, setOpen } = useSidebar();
@@ -126,19 +156,33 @@ export function AppSidebar() {
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.title} className="mb-6">
                     <SidebarMenuButton asChild>
-                      <NavLink 
-                        to={item.url} 
-                        className={({ isActive }) => `
-                          ${getNavCls({ isActive })}
-                          group relative flex items-center rounded-xl transition-all duration-300 hover:bg-sidebar-accent/30 hover:translate-x-1
-                        `}
-                      >
-                        <div className="relative">
-                          <item.icon className={` flex transition-all duration-300`} />
-                            {/* <div className="absolute inset-0 bg-primary/30 rounded-full blur-sm"></div> */}
-                        </div>
-                      
-                      </NavLink>
+                      {item.title === "Certificates" ? (
+                        <CertificateHoverMenu>
+                          <NavLink 
+                            to={item.url} 
+                            className={({ isActive }) => `
+                              ${getNavCls({ isActive })}
+                              group relative flex items-center rounded-xl transition-all duration-300 hover:bg-sidebar-accent/30 hover:translate-x-1
+                            `}
+                          >
+                            <div className="relative">
+                              <item.icon className="flex transition-all duration-300" />
+                            </div>
+                          </NavLink>
+                        </CertificateHoverMenu>
+                      ) : (
+                        <NavLink 
+                          to={item.url} 
+                          className={({ isActive }) => `
+                            ${getNavCls({ isActive })}
+                            group relative flex items-center rounded-xl transition-all duration-300 hover:bg-sidebar-accent/30 hover:translate-x-1
+                          `}
+                        >
+                          <div className="relative">
+                            <item.icon className="flex transition-all duration-300" />
+                          </div>
+                        </NavLink>
+                      )}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
