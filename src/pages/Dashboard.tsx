@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Shield, 
   AlertTriangle, 
@@ -9,35 +10,16 @@ import {
   Globe,
   TrendingUp,
   Settings,
-  Plus
+  Plus,
+  Loader2
 } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useCertificates, useCertificateStats } from "@/hooks/useCertificates";
 
 const Dashboard = () => {
-  const certificates = [
-    {
-      domain: "example.com",
-      status: "valid",
-      expiryDays: 45,
-      issuer: "Let's Encrypt",
-      lastChecked: "2 minutes ago"
-    },
-    {
-      domain: "api.example.com", 
-      status: "warning",
-      expiryDays: 7,
-      issuer: "DigiCert",
-      lastChecked: "5 minutes ago"
-    },
-    {
-      domain: "old.example.com",
-      status: "expired",
-      expiryDays: -2,
-      issuer: "GoDaddy",
-      lastChecked: "1 hour ago"
-    }
-  ];
+  const { data: certificates, isLoading: certificatesLoading, error: certificatesError } = useCertificates();
+  const { data: stats, isLoading: statsLoading, error: statsError } = useCertificateStats();
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -102,8 +84,12 @@ const Dashboard = () => {
               <Globe className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">24</div>
-              <p className="text-xs text-muted-foreground">+2 from last month</p>
+              {statsLoading ? (
+                <Skeleton className="h-8 w-16" />
+              ) : (
+                <div className="text-2xl font-bold">{stats?.total || 0}</div>
+              )}
+              <p className="text-xs text-muted-foreground">Monitored domains</p>
             </CardContent>
           </Card>
 
@@ -113,8 +99,14 @@ const Dashboard = () => {
               <CheckCircle className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">18</div>
-              <p className="text-xs text-muted-foreground">75% of total</p>
+              {statsLoading ? (
+                <Skeleton className="h-8 w-16" />
+              ) : (
+                <div className="text-2xl font-bold text-green-600">{stats?.valid || 0}</div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                {stats?.total ? Math.round((stats.valid / stats.total) * 100) : 0}% of total
+              </p>
             </CardContent>
           </Card>
 
@@ -124,7 +116,11 @@ const Dashboard = () => {
               <AlertTriangle className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">5</div>
+              {statsLoading ? (
+                <Skeleton className="h-8 w-16" />
+              ) : (
+                <div className="text-2xl font-bold text-yellow-600">{stats?.expiring || 0}</div>
+              )}
               <p className="text-xs text-muted-foreground">Within 30 days</p>
             </CardContent>
           </Card>
@@ -135,7 +131,11 @@ const Dashboard = () => {
               <TrendingUp className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">99.9%</div>
+              {statsLoading ? (
+                <Skeleton className="h-8 w-16" />
+              ) : (
+                <div className="text-2xl font-bold text-blue-600">{stats?.uptime || '0%'}</div>
+              )}
               <p className="text-xs text-muted-foreground">Last 30 days</p>
             </CardContent>
           </Card>
@@ -150,35 +150,72 @@ const Dashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {certificates.map((cert, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    {getStatusIcon(cert.status)}
-                    <div>
-                      <div className="font-medium">{cert.domain}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Issued by {cert.issuer} • Last checked {cert.lastChecked}
+            {certificatesLoading ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-4">
+                      <Skeleton className="h-4 w-4 rounded-full" />
+                      <div>
+                        <Skeleton className="h-4 w-32 mb-2" />
+                        <Skeleton className="h-3 w-48" />
                       </div>
                     </div>
+                    <div className="flex items-center space-x-4">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-8 w-24" />
+                    </div>
                   </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <div className="text-sm font-medium">
-                        {cert.expiryDays > 0 ? `${cert.expiryDays} days left` : `Expired ${Math.abs(cert.expiryDays)} days ago`}
+                ))}
+              </div>
+            ) : certificatesError ? (
+              <div className="text-center py-8">
+                <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">Failed to load certificates</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {certificatesError.message}
+                </p>
+              </div>
+            ) : certificates && certificates.length > 0 ? (
+              <div className="space-y-4">
+                {certificates.slice(0, 5).map((cert) => (
+                  <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center space-x-4">
+                      {getStatusIcon(cert.status)}
+                      <div>
+                        <div className="font-medium">{cert.domain}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Issued by {cert.issuer} • Last checked {cert.lastChecked}
+                        </div>
                       </div>
                     </div>
-                    <Badge className={getStatusColor(cert.status)}>
-                      {cert.status}
-                    </Badge>
-                    <Button variant="outline" size="sm">
-                      View Details
-                    </Button>
+                    
+                    <div className="flex items-center space-x-4">
+                      <div className="text-right">
+                        <div className="text-sm font-medium">
+                          {cert.expiryDays > 0 ? `${cert.expiryDays} days left` : `Expired ${Math.abs(cert.expiryDays)} days ago`}
+                        </div>
+                      </div>
+                      <Badge className={getStatusColor(cert.status)}>
+                        {cert.status}
+                      </Badge>
+                      <Button variant="outline" size="sm">
+                        View Details
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No certificates found</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Add your first certificate to start monitoring
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>

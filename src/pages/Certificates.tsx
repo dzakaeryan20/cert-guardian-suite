@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Shield, 
   AlertTriangle, 
@@ -9,51 +10,27 @@ import {
   Search,
   Filter,
   Plus,
-  MoreHorizontal
+  MoreHorizontal,
+  Loader2
 } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AddCertificateDialog } from "@/components/AddCertificateDialog";
+import { useCertificates } from "@/hooks/useCertificates";
+import { useState } from "react";
 
 const Certificates = () => {
-  const certificates = [
-    {
-      id: 1,
-      domain: "example.com",
-      status: "valid",
-      expiryDays: 45,
-      issuer: "Let's Encrypt",
-      lastChecked: "2 minutes ago",
-      serialNumber: "03:E7:07:B2:A3:A2:6B:F3"
-    },
-    {
-      id: 2,
-      domain: "api.example.com", 
-      status: "warning",
-      expiryDays: 7,
-      issuer: "DigiCert",
-      lastChecked: "5 minutes ago",
-      serialNumber: "04:A1:B2:C3:D4:E5:F6:G7"
-    },
-    {
-      id: 3,
-      domain: "old.example.com",
-      status: "expired",
-      expiryDays: -2,
-      issuer: "GoDaddy",
-      lastChecked: "1 hour ago",
-      serialNumber: "05:B2:C3:D4:E5:F6:G7:H8"
-    },
-    {
-      id: 4,
-      domain: "secure.example.com",
-      status: "valid",
-      expiryDays: 89,
-      issuer: "DigiCert",
-      lastChecked: "3 minutes ago",
-      serialNumber: "06:C3:D4:E5:F6:G7:H8:I9"
-    }
-  ];
+  const { data: certificates, isLoading, error, refetch } = useCertificates();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+
+  // Filter certificates based on search and status
+  const filteredCertificates = certificates?.filter(cert => {
+    const matchesSearch = cert.domain.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         cert.issuer.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus === "all" || cert.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  }) || [];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -107,6 +84,8 @@ const Certificates = () => {
                   <Input
                     placeholder="Search certificates..."
                     className="pl-10 w-80"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <Button variant="outline">
@@ -119,44 +98,107 @@ const Certificates = () => {
             {/* Certificates Table */}
             <Card>
               <CardHeader>
-                <CardTitle>SSL Certificates ({certificates.length})</CardTitle>
-                <CardDescription>
-                  All your SSL certificates in one place
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>
+                      SSL Certificates ({isLoading ? '...' : filteredCertificates.length})
+                    </CardTitle>
+                    <CardDescription>
+                      All your SSL certificates in one place
+                    </CardDescription>
+                  </div>
+                  {!isLoading && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => refetch()}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Refresh"}
+                    </Button>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {certificates.map((cert) => (
-                    <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center space-x-4">
-                        {getStatusIcon(cert.status)}
-                        <div>
-                          <div className="font-medium">{cert.domain}</div>
-                          <div className="text-sm text-muted-foreground">
-                            Serial: {cert.serialNumber}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            Issued by {cert.issuer} • Last checked {cert.lastChecked}
+                {isLoading ? (
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <Skeleton className="h-4 w-4 rounded-full" />
+                          <div>
+                            <Skeleton className="h-4 w-32 mb-2" />
+                            <Skeleton className="h-3 w-24 mb-1" />
+                            <Skeleton className="h-3 w-48" />
                           </div>
                         </div>
+                        <div className="flex items-center space-x-4">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-6 w-16" />
+                          <Skeleton className="h-8 w-8" />
+                        </div>
                       </div>
-                      
-                      <div className="flex items-center space-x-4">
-                        <div className="text-right">
-                          <div className="text-sm font-medium">
-                            {cert.expiryDays > 0 ? `${cert.expiryDays} days left` : `Expired ${Math.abs(cert.expiryDays)} days ago`}
+                    ))}
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-8">
+                    <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">Failed to load certificates</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {error.message}
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      className="mt-4" 
+                      onClick={() => refetch()}
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                ) : filteredCertificates.length > 0 ? (
+                  <div className="space-y-4">
+                    {filteredCertificates.map((cert) => (
+                      <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div className="flex items-center space-x-4">
+                          {getStatusIcon(cert.status)}
+                          <div>
+                            <div className="font-medium">{cert.domain}</div>
+                            <div className="text-sm text-muted-foreground">
+                              Serial: {cert.serialNumber}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              Issued by {cert.issuer} • Last checked {cert.lastChecked}
+                            </div>
                           </div>
                         </div>
-                        <Badge className={getStatusColor(cert.status)}>
-                          {cert.status}
-                        </Badge>
-                        <Button variant="outline" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
+                        
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <div className="text-sm font-medium">
+                              {cert.expiryDays > 0 ? `${cert.expiryDays} days left` : `Expired ${Math.abs(cert.expiryDays)} days ago`}
+                            </div>
+                          </div>
+                          <Badge className={getStatusColor(cert.status)}>
+                            {cert.status}
+                          </Badge>
+                          <Button variant="outline" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">
+                      {searchTerm ? 'No certificates match your search' : 'No certificates found'}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {searchTerm ? 'Try adjusting your search terms' : 'Add your first certificate to start monitoring'}
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </main>
